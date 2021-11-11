@@ -6,6 +6,7 @@ CREATE TABLE Users (
     email VARCHAR UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     firstname VARCHAR(255) NOT NULL,
+    balance DECIMAL NOT NULL,
     lastname VARCHAR(255) NOT NULL
 );
 
@@ -21,4 +22,74 @@ CREATE TABLE Purchases (
     uid INT NOT NULL REFERENCES Users(id),
     pid INT NOT NULL REFERENCES Products(id),
     time_purchased timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC')
+);
+
+
+-- Our own stuff
+/*User (id, password, email, first_name, mi, last_name, street_address, city, state, zip_code, balance)
+CREATE TABLE User
+(id INTEGER NOT NULL,
+ address VARCHAR(256) NOT NULL,
+ city VARCHAR(256) NOT NULL,
+ state VARCHAR(256) NOT NULL,
+ zip INT(5) NOT NULL,
+);
+*/
+
+/*OrderHistory (id, product_id, total_amount, date_time, quantity, status)*/
+CREATE TABLE OrderHistory
+(product_id INTEGER NOT NULL,
+ id INTEGER NOT NULL,
+ total_amount REAL NOT NULL,
+ quantity INT NOT NULL,
+ date_time TIMESTAMP NOT NULL,
+ status VARCHAR(256) NOT NULL,
+ PRIMARY KEY(product_id),
+ PRIMARY KEY(id),
+ PRIMARY KEY(date_time)
+);
+
+/*Products(id, product_id, short, long, image, price)*/
+CREATE TABLE Products
+(id INTEGER NOT NULL,
+ product_id INTEGER NOT NULL,
+ short VARCHAR(256) NOT NULL,
+ long VARCHAR(256) NOT NULL,
+ image VARCHAR(256) NOT NULL,
+ price REAL NOT NULL,
+ PRIMARY KEY(id)
+ PRIMARY KEY(product_id)
+);
+
+/*Cart(id, product_id, quantity)*/
+CREATE TABLE Cart
+(
+ id INTEGER NOT NULL,
+ product_id INTEGER NOT NULL,
+ quantity INTEGER NOT NULL,
+ unit_price REAL NOT NULL, 
+ total_price REAL NOT NULL, 
+ PRIMARY KEY(id),
+ PRIMARY KEY(product_id)
+);
+
+/*Inventory(id, product_id, quantity)*/
+CREATE TABLE Inventory
+(id INTEGER NOT NULL,
+ product_id INTEGER NOT NULL,
+ quantity INTEGER NOT NULL,
+ PRIMARY KEY(id)
+ PRIMARY KEY(product_id)
+);
+
+/*Feedback(id,product_id, rating, review, date_time)*/
+CREATE TABLE Feedback
+(id INTEGER NOT NULL,
+ product_id INTEGER NOT NULL,
+ rating INTEGER NOT NULL,
+ review VARCHAR(256) NOT NULL,
+ date_time TIMESTAMP NOT NULL,
+ PRIMARY KEY(id),
+ PRIMARY KEY(product_id),
+ PRIMARY KEY(date_time)
 );

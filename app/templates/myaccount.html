@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Account:</h2>
+
+{% if current_user.is_authenticated %}
+
+
+<p>Email: {{user.email}}</p>
+<p>First Name: {{user.firstname}}</p>
+<p>Last Name: {{user.lastname}}</p>
+
+
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your account information!</p>
+{% endif %}
+
+
+{% endblock %}
