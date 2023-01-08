@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, request
 from werkzeug.urls import url_parse
 from flask_login import login_user, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, DecimalField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from flask_babel import _, lazy_gettext as _l
 
@@ -53,6 +53,25 @@ class RegistrationForm(FlaskForm):
         if User.email_exists(email.data):
             raise ValidationError(_('Already a user with this email.'))
 
+class UpdateForm(FlaskForm):
+    firstname = StringField(_l('First Name'), validators=[DataRequired()])
+    lastname = StringField(_l('Last Name'), validators=[DataRequired()])
+    email = StringField(_l('Email'), validators=[Email()])
+    password = PasswordField(_l('Password'), validators=[DataRequired()])
+    password2 = PasswordField(
+        _l('Repeat Password'), validators=[DataRequired(),
+                                           EqualTo('password')])
+    submit = SubmitField(_l('Register'))
+
+    def validate_email(self, email):
+        if User.email_exists(email.data):
+            raise ValidationError(_('Already a user with this email.'))
+
+
+class UpdateForm(FlaskForm):
+    balance = DecimalField(_l('Amount'), validators=[DataRequired()])
+    submit = SubmitField(_l('Update Balance'))
+
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -67,6 +86,29 @@ def register():
             flash('Congratulations, you are now a registered user!')
             return redirect(url_for('users.login'))
     return render_template('register.html', title='Register', form=form)
+
+
+@bp.route('/update', methods=['GET', 'POST'])
+def update():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        if User.update(current_user.id, form.email.data,
+                         form.password.data,
+                         form.firstname.data,
+                         form.lastname.data):
+            flash('Congratulations, you have updated your info!')
+            return redirect(url_for('index.myaccount'))
+    return render_template('update.html', title='Update Information', form=form)
+
+
+@bp.route('/updatebalance', methods=['GET', 'POST'])
+def updatebalance():
+    form = UpdateForm()
+    if form.validate_on_submit():
+        if User.updatebalance(current_user.id, form.balance.data):
+            flash('Congratulations, you have updated your balance!')
+            return redirect(url_for('index.myaccount'))
+    return render_template('updatebalance.html', title='Update Balance', form=form)
 
 
 @bp.route('/logout')

@@ -6,14 +6,65 @@
 {% if current_user.is_authenticated %}
 
 
+
+
 <p>Email: {{user.email}}</p>
 <p>First Name: {{user.firstname}}</p>
 <p>Last Name: {{user.lastname}}</p>
+<p>Balance: ${{user.balance}}</p>
+<a class="btn btn-secondary" href="{{ url_for('users.updatebalance') }}" role="button">Adjust Balance</a>
 
+<a class="btn btn-secondary" href="{{ url_for('users.update') }}" role="button">Update Information</a>
 
 {% else %}
 <p><a href="{{ url_for('users.login') }}">Log in</a> to see your account information!</p>
 {% endif %}
+
+
+
+<h2>Orders:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Purchase ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for purchase in purchase_history%}
+      <tr>
+        <th scope="row">{{purchase.id}}</th>
+        <td>{{purchase.pid}}</td>
+        <td>{{purchase.time_purchased}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Your Reviews:</h2>
+<table class='table table-hover table-bordered container'>
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Review ID</th>
+        <th scope="col">Product Name</th>
+        <th scope="col">Rating</th>
+        <th scope="col">Review</th>
+        <th scope="col">Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for review in review_history%}
+        <tr>
+          <th scope="row">{{review.id}}</th>
+          <td>{{review.pid}}</td>
+          <td>{{review.rating}}</td>
+          <td>{{review.review}}</td>
+          <td>{{review.date_time}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
 
 {% endblock %}
